@@ -1,0 +1,20 @@
+site_name: Портфолио Петухова Кирилла
+site_description: Портфолио студента программы "Нейротехнологии и программирование"
+site_author: Петухов Кирилл
+
+site_url: https://kirill12-source.github.io/python-sem2-lab1/
+
+nav:
+    - Главная: index.md
+    - Учебные проекты: studying-projects.md
+
+theme:
+    name: simple-blog
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - rust
+
+
+copyright: |
+  &copy; 2026 Петухов Кирилл. Создано с помощью <a href="https://www.mkdocs.org/" target="_blank">MkDocs</a> и темы <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank">Material</a>.
