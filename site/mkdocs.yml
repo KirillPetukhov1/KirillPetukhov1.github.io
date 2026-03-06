@@ -4,16 +4,44 @@ site_author: Петухов Кирилл
 
 site_url: https://kirill12-source.github.io/python-sem2-lab1/
 
-nav:
-    - Главная: index.md
-    - Учебные проекты: studying-projects.md
-
 theme:
-    name: simple-blog
-    highlightjs: true
-    hljs_languages:
-        - yaml
-        - rust
+  name: material
+  palette:
+    primary: teal
+    accent: deep purple
+  font:
+    text: Roboto
+    code: Fira Code
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Главная: index.md
+  - Об авторе: about.md
+  - Лабораторные работы:
+    - 1 семестр:
+      - Лабораторная №10: semester1/lab10.md
+      - Лабораторная №11: semester1/lab11.md
+    - 2 семестр:
+      - Лабораторная №1: semester2/lab1.md
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - admonition
+  - footnotes
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/KirillPetukhov1
 
 
 copyright: |
