@@ -4,11 +4,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pytest
 
 from main import (create_vector, create_matrix, reshape_vector, vector_add,
-                  scalar_multiply, elementwise_multiply, dot_product, 
-                  matrix_multiply, matrix_determinant, load_dataset, 
-                  matrix_inverse, statistical_analysis, normalize_data, 
+                  scalar_multiply, elementwise_multiply, dot_product,
+                  matrix_multiply, matrix_determinant, load_dataset,
+                  matrix_inverse, statistical_analysis, normalize_data,
                   plot_histogram, plot_heatmap, plot_line, solve_linear_system)
 
 
@@ -118,18 +119,109 @@ def test_normalization():
 def test_plot_histogram():
     # Просто проверяем, что функция не падает
     data = np.array([1, 2, 3, 4, 5])
-    plot_histogram(data)
+    plot_histogram(data, False)
 
 
 def test_plot_heatmap():
-    matrix = np.array([[1, 0.5], [0.5, 1]])
-    plot_heatmap(matrix)
+    matrix = np.array([[1, 0.5, 0], [0.5, 1, 0.7], [0, 0.7, 1]])
+    plot_heatmap(matrix, False)
 
 
 def test_plot_line():
     x = np.array([1, 2, 3])
     y = np.array([4, 5, 6])
-    plot_line(x, y)
+    plot_line(x, y, False)
+
+
+def test_vector_add_shape_mismatch():
+    """Проверка, что сложение векторов разной длины вызывает ValueError."""
+    a = np.array([1, 2, 3])
+    b = np.array([4, 5])
+    with pytest.raises(ValueError, match="operands could not be broadcast together"):
+        vector_add(a, b)
+
+
+def test_elementwise_multiply_shape_mismatch():
+    """Проверка, что поэлементное умножение с несовместимыми формами вызывает ValueError."""
+    a = np.array([[1, 2], [3, 4]])
+    b = np.array([1, 2, 3])
+    with pytest.raises(ValueError, match="operands could not be broadcast together"):
+        elementwise_multiply(a, b)
+
+
+def test_dot_product_length_mismatch():
+    """Проверка, что скалярное произведение векторов разной длины вызывает ValueError."""
+    a = np.array([1, 2, 3])
+    b = np.array([4, 5])
+    with pytest.raises(ValueError, match="shapes .* not aligned"):
+        dot_product(a, b)
+
+
+def test_matrix_multiply_incompatible():
+    """Проверка, что умножение матриц с несовместимыми размерами вызывает ValueError."""
+    A = np.array([[1, 2, 3], [4, 5, 6]])
+    B = np.array([[1, 2], [3, 4]])
+    with pytest.raises(ValueError, match="Input operand .* has a mismatch in its"):
+        matrix_multiply(A, B)
+
+
+def test_matrix_determinant_non_square():
+    """Проверка, что определитель вычисляется только для квадратной матрицы."""
+    A = np.array([[1, 2, 3], [4, 5, 6]])
+    with pytest.raises(ValueError, match="Last 2 dimensions of the array must be square"):
+        matrix_determinant(A)
+
+
+def test_matrix_inverse_non_square():
+    """Проверка, что обратная матрица существует только для квадратной."""
+    A = np.array([[1, 2, 3], [4, 5, 6]])
+    with pytest.raises(ValueError, match="Last 2 dimensions of the array must be square"):
+        matrix_inverse(A)
+
+
+def test_matrix_inverse_singular():
+    """Проверка, что для вырожденной матрицы выбрасывается LinAlgError."""
+    A = np.array([[1, 2], [1, 2]])
+    with pytest.raises(np.linalg.LinAlgError, match="Singular matrix"):
+        matrix_inverse(A)
+
+
+def test_solve_linear_system_non_square():
+    """Решение системы Ax = b только для квадратной A."""
+    A = np.array([[1, 2, 3], [4, 5, 6]])
+    b = np.array([1, 2])
+    with pytest.raises(ValueError, match="Last 2 dimensions of the array must be square"):
+        solve_linear_system(A, b)
+
+
+def test_solve_linear_system_singular():
+    """Решение системы с вырожденной матрицей вызывает LinAlgError."""
+    A = np.array([[1, 2], [1, 2]])
+    b = np.array([1, 2])
+    with pytest.raises(np.linalg.LinAlgError, match="Singular matrix"):
+        solve_linear_system(A, b)
+
+
+def test_solve_linear_system_b_dim_mismatch():
+    """Проверка несоответствия размерностей b и A."""
+    A = np.array([[1, 2], [3, 4]])
+    b = np.array([1, 2, 3])
+    with pytest.raises(ValueError, match="Input operand .* has a mismatch in its"):
+        solve_linear_system(A, b)
+
+
+def test_load_dataset_file_not_found():
+    """Проверка, что при отсутствии файла выбрасывается FileNotFoundError."""
+    with pytest.raises(FileNotFoundError):
+        load_dataset("non_existent_file.csv")
+
+
+def test_normalize_data_constant_input():
+    """Проверка поведения при одинаковых значениях (max-min = 0)."""
+    data = np.array([5, 5, 5])
+    result = normalize_data(data)
+    assert np.all(np.isinf(result) | np.isnan(result)), \
+        "При constant input результат должен содержать inf или nan"
 
 
 if __name__ == "__main__":
