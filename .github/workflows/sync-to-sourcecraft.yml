@@ -1,0 +1,30 @@
+name: Sync to SourceCraft
+
+on:
+  push:
+    branches:
+      - main          # или любая другая ветка, которую нужно отслеживать
+    tags:
+      - '*'           # если хотите синхронизировать и теги
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # получаем всю историю, чтобы корректно пушить
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SOURCECRAFT_SSH_PRIVATE_KEY }}
+
+      - name: Add SourceCraft remote
+        run: |
+          git remote add sourcecraft https://anyname:${{ secrets.SOURCECRAFT_SSH_PRIVATE_KEY }}@git.sourcecraft.dev/kirillmegapro12/kirillpetukhov1-github-io.git
+
+      - name: Push to SourceCraft
+        run: |
+          git push sourcecraft --mirror  # зеркально отправляет все ветки и теги
