@@ -29,6 +29,9 @@ nav:
     - 2 семестр:
       - Лабораторная №1: semester2/lab1.md
       - Лабораторная №2: semester2/lab2.md
+      - Лабораторная №3: semester2/lab3.md
+      - Лабораторная №4: semester2/lab4.md
+      - Лабораторная №5: semester2/lab5.md
 
 markdown_extensions:
   - pymdownx.highlight
